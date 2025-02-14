@@ -8,7 +8,6 @@ const gearService = new GearService(new GearRepository());
 
 gearRouter.post("/", async (req: Request, res: Response) => {
   const gear: IGear= req.body
-  gear.id = gear.serialNumber
   const user = await gearService.createGear(gear);
   res.json(user);
 });

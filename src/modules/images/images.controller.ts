@@ -13,6 +13,6 @@ imagesRouter.post("/", storageService.single("file"), (req: Request, res: Respon
   res.json({ message: "Archivo subido con éxito", file: req.file });
 });
 
-imagesRouter.use("/uploads", express.static("uploads")); 
+imagesRouter.use("/uploads", express.static("storage"));
 
 export default imagesRouter;
