@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "../config/database";
 import gearRouter from "../modules/gear/gear.controller";
 import imagesRouter from "../modules/images/images.controller";
+import areaRouter from "../modules/area/area.controller";
 
 const cors = require('cors');
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use("/gear", gearRouter);
 app.use("/images", imagesRouter)
+app.use("/area", areaRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
