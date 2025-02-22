@@ -15,4 +15,8 @@ export class AreaService {
   async getAllArea(): Promise<IArea[]> {
     return this.areaRepository.findAll();
   }
+
+  async updateArea(areaUpdated: IArea): Promise<void | null>{
+    return this.areaRepository.update(areaUpdated)
+  }
 }

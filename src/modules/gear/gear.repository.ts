@@ -13,4 +13,10 @@ export class GearRepository extends BaseRepository<IGear> {
   async findAll(): Promise<IGear[]> {
     return Gear.find();
   }
+
+  async update(data: IGear): Promise<void> {
+    return
+  }
+
+
 }

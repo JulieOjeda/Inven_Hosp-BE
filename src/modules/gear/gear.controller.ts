@@ -2,14 +2,34 @@ import { Request, Response, Router } from "express";
 import { GearService } from "./gear.service";
 import { GearRepository } from "./gear.repository";
 import { IGear } from "./gear.model";
+import notificationService from "../../shared/notification.service";
+import {ReportService} from "../report/report.service";
+import {ReportRepository} from "../report/report.repository";
+import {IReport} from "../report/report.model";
+import mongoose from "mongoose";
+import {ReportStatus} from "../report/report.enums";
 
 const gearRouter = Router();
 const gearService = new GearService(new GearRepository());
+const reportService = new ReportService(new ReportRepository())
 
 gearRouter.post("/", async (req: Request, res: Response) => {
   const gear: IGear= req.body
-  const user = await gearService.createGear(gear);
-  res.json(user);
+  const gearRes = await gearService.createGear(gear);
+  const newReport : any ={
+    resume: "",
+    gear:  gearRes._id,
+    createdAt: new Date(),
+    status : ReportStatus.PENDING
+  }
+  await reportService.createReport(newReport)
+  res.json(gearRes);
+});
+
+gearRouter.get("/notifications" ,async (req: Request, res: Response) => {
+  const notifications = notificationService.getNotifications();
+  res.json(notifications);
+  notificationService.cleanNotifications()
 });
 
 gearRouter.get("/:id", async (req: Request, res: Response) => {

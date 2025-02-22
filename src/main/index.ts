@@ -4,11 +4,13 @@ import connectDB from "../config/database";
 import gearRouter from "../modules/gear/gear.controller";
 import imagesRouter from "../modules/images/images.controller";
 import areaRouter from "../modules/area/area.controller";
+import reportRouter from "../modules/report/report.controller";
+import {scheduleMaintenanceJob} from "../config/cron";
 
 const cors = require('cors');
 dotenv.config();
 connectDB();
-
+scheduleMaintenanceJob()
 const app = express();
 app.use(cors())
 app.use(express.json());
@@ -16,6 +18,7 @@ app.use(express.json());
 app.use("/gear", gearRouter);
 app.use("/images", imagesRouter)
 app.use("/area", areaRouter)
+app.use("/report", reportRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

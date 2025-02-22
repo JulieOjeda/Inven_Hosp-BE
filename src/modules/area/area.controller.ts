@@ -22,4 +22,10 @@ areaRouter.get("/", async (req: Request, res: Response) => {
   res.json(gears);
 });
 
+areaRouter.put("/", async (req: Request, res: Response) =>{
+  const reqBody: IArea= req.body
+  const response = await areaService.updateArea(reqBody)
+  response !== null ? res.json({ message: "Area updated" }) : res.status(404).json({ message: "Area not found" });
+})
+
 export default areaRouter;

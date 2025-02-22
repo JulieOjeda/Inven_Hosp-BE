@@ -13,4 +13,17 @@ export class AreaRepository extends BaseRepository<IArea> {
   async findAll(): Promise<IArea[]> {
     return Area.find();
   }
+
+  async update(area: IArea): Promise<void | null> {
+    let updatedGear = await Area.findByIdAndUpdate(area._id, area,{
+      new: true,
+      runValidators: true,
+    })
+    if (!updatedGear) {
+      console.log("Gear no encontrado");
+      return null;
+    }
+
+    return
+  }
 }

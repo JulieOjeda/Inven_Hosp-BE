@@ -1,4 +1,7 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, {Document, Model, Schema} from "mongoose";
+import Area from "./../area/area.model";
+import Report, {IReport} from "./../report/report.model";
+import {ReportStatus} from "../report/report.enums";
 
 // Interfaz para TypeScript
 export interface IGear extends Document {
@@ -23,6 +26,7 @@ export interface IGear extends Document {
     startingDate: Date;
     descriptionMaintenance: string;
     responsible: string;
+    frequencyMaintenance : number
 }
 
 // Esquema de Mongoose
@@ -48,10 +52,17 @@ const GearSchema = new Schema<IGear>(
         startingDate: { type: Date, required: true },
         descriptionMaintenance: { type: String, required: true, maxlength: 100 },
         responsible: { type: String, required: true, maxlength: 50 },
+        frequencyMaintenance : {type: Number, required: true, min: 1}
     },
     { timestamps: true }
 );
 
+GearSchema.post("save", async function (doc: IGear) {
+    await Area.findOneAndUpdate(
+        { name: doc.areaAssigned},
+        { $inc: { itemsCount: 1 } }
+    );
+});
 // Modelo de Mongoose
 const GearModel: Model<IGear> = mongoose.model<IGear>("Gear", GearSchema);
 
