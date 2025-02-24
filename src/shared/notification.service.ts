@@ -8,7 +8,11 @@ export interface Notification{
 
 export class NotificationService{
     private gearRepository: GearRepository
-    private notifications : Notification[] = []
+    private notifications : Notification[] = [{
+        message: `Le falta un dia para terminar un reporte pendiente`,
+        createdAt: new Date(),
+        gearId: "67b90680c26458a3afd28e14"
+    }]
     constructor(gearRepository: GearRepository) {
         this.gearRepository = gearRepository
     }
@@ -39,7 +43,6 @@ export class NotificationService{
     }
 
     cleanNotifications(){
-        this.notifications = []
     }
 }
 
