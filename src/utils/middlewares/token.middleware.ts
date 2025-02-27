@@ -10,10 +10,10 @@ declare global {
 }
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
-    const publicRoutes = ['/user/login', '/user/register']; // Rutas públicas
+    const publicRoutes = ['/user/login', '/user/register' , "/images/uploads"]; // Rutas públicas
     const authHeader = req.headers['authorization'];
 
-    if (publicRoutes.includes(req.path)) {
+    if (publicRoutes.includes(req.path) || req.path.includes(publicRoutes[2])) {
         return next();
     }
 
