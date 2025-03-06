@@ -14,7 +14,16 @@ export class GearRepository extends BaseRepository<IGear> {
     return Gear.find();
   }
 
-  async update(data: IGear): Promise<void> {
+  async update(gear: IGear): Promise<void | null> {
+    let updatedGear = await Gear.findByIdAndUpdate(gear._id, gear,{
+      new: true,
+      runValidators: true,
+    })
+    if (!updatedGear) {
+      console.log("Gear no encontrado");
+      return null;
+    }
+
     return
   }
 

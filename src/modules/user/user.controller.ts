@@ -45,7 +45,7 @@ userRouter.post('/login', async (req: Request, res: Response) => {
   }
 
   // Genera un token JWT
-  const token = jwt.sign({ id: user.userId }, 'secret-key', { expiresIn: '1h' }); // Expira en 1 hora
+  const token = jwt.sign({ id: user.userId }, 'secret-key', { expiresIn: '5h' }); // Expira en 1 hora
 
   res.status(200).json({ auth: true, token });
 });

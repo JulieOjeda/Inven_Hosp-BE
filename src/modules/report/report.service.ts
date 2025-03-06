@@ -1,8 +1,11 @@
 import {IReport} from "./report.model";
-import { ReportRepository } from "./report.repository";
+import {ReportRepository} from "./report.repository";
+import {GearRepository} from "../gear/gear.repository";
+import {ReportStatus} from "./report.enums";
 
 export class ReportService {
-  constructor(private reportRepository: ReportRepository) {}
+  constructor(private reportRepository: ReportRepository,
+              private gearRepository: GearRepository) {}
 
   async createReport(newReport: IReport): Promise<IReport> {
     return this.reportRepository.create(newReport);
@@ -17,6 +20,18 @@ export class ReportService {
   }
 
   async updateReport(reportUpdated: IReport): Promise<void | null>{
-    return this.reportRepository.update(reportUpdated)
+    if(reportUpdated.status === ReportStatus.COMPLETED){
+      const gear = await this.gearRepository.findById(reportUpdated.gear.toString());
+      if (!gear) throw new Error("Equipo no encontrado");
+
+      const newMaintenanceDate = new Date(); // Fecha de mantenimiento actual
+      newMaintenanceDate.setHours(0, 0, 0, 0);
+
+      // Sumamos la frecuencia de mantenimiento al día actual
+      newMaintenanceDate.setDate(newMaintenanceDate.getDate() + gear.frequencyMaintenance);
+      gear.maintenanceAt = newMaintenanceDate
+      await this.gearRepository.update(gear);
+    }
+    return await this.reportRepository.update(reportUpdated)
   }
 }

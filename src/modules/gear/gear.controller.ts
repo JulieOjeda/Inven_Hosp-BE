@@ -11,7 +11,7 @@ import {ReportStatus} from "../report/report.enums";
 
 const gearRouter = Router();
 const gearService = new GearService(new GearRepository());
-const reportService = new ReportService(new ReportRepository())
+const reportService = new ReportService(new ReportRepository(), new GearRepository())
 
 gearRouter.post("/", async (req: Request, res: Response) => {
   const gear: IGear= req.body
@@ -23,7 +23,10 @@ gearRouter.post("/", async (req: Request, res: Response) => {
     status : ReportStatus.PENDING
   }
   await reportService.createReport(newReport)
-  res.json(gearRes);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const withNotification =  notificationService.checkMaintenanceByGear(gearRes, today);
+  res.json({gearRes, "withNotifications": withNotification});
 });
 
 gearRouter.get("/notifications" ,async (req: Request, res: Response) => {

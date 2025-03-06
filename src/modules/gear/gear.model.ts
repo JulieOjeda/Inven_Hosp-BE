@@ -27,6 +27,8 @@ export interface IGear extends Document {
     descriptionMaintenance: string;
     responsible: string;
     frequencyMaintenance : number
+    maintenanceAt : Date
+    createdAt: Date
 }
 
 // Esquema de Mongoose
@@ -52,7 +54,8 @@ const GearSchema = new Schema<IGear>(
         startingDate: { type: Date, required: true },
         descriptionMaintenance: { type: String, required: true, maxlength: 100 },
         responsible: { type: String, required: true, maxlength: 50 },
-        frequencyMaintenance : {type: Number, required: true, min: 1}
+        frequencyMaintenance : {type: Number, required: true, min: 1},
+        maintenanceAt: { type: Date, required: false }
     },
     { timestamps: true }
 );
@@ -62,6 +65,15 @@ GearSchema.post("save", async function (doc: IGear) {
         { name: doc.areaAssigned},
         { $inc: { itemsCount: 1 } }
     );
+});
+
+GearSchema.pre("save", function (next) {
+    if (!this.maintenanceAt) {
+        this.maintenanceAt = this.createdAt;
+    }
+    console.log(`Comparando: ${this.createdAt.toDateString()} con ${this.maintenanceAt.toDateString()}`);
+    next();
+
 });
 // Modelo de Mongoose
 const GearModel: Model<IGear> = mongoose.model<IGear>("Gear", GearSchema);

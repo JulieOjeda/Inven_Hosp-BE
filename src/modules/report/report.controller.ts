@@ -2,9 +2,10 @@ import { Request, Response, Router } from "express";
 import { ReportService } from "./report.service";
 import { ReportRepository } from "./report.repository";
 import { IReport} from "./report.model";
+import {GearRepository} from "../gear/gear.repository";
 
 const reportRouter = Router();
-const reportService = new ReportService(new ReportRepository());
+const reportService = new ReportService(new ReportRepository(), new GearRepository());
 
 reportRouter.post("/", async (req: Request, res: Response) => {
   const report: IReport= req.body
@@ -25,7 +26,7 @@ reportRouter.get("/", async (req: Request, res: Response) => {
 reportRouter.put("/", async (req: Request, res: Response) =>{
   const reqBody: IReport= req.body
   const response = await reportService.updateReport(reqBody)
-  response !== null ? res.json({ message: "Area updated" }) : res.status(404).json({ message: "Area not found" });
+  response !== null ? res.json({ message: "Report updated" }) : res.status(404).json({ message: "Area not found" });
 })
 
 export default reportRouter;
