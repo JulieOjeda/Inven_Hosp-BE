@@ -1,5 +1,6 @@
 import {GearRepository} from "../modules/gear/gear.repository";
 import {IGear} from "../modules/gear/gear.model";
+import winston from "../config/winston";
 
 export interface Notification{
     message: string
@@ -26,11 +27,9 @@ export class NotificationService{
 
 
     checkMaintenanceByGear(gear: IGear, compareDate: Date): boolean {
-        if (!gear.frequencyMaintenance) return false;
+        if (!gear.frequencyMaintenance || !gear.maintenanceAt) return false;
 
         const nextMaintenance = new Date(gear.maintenanceAt);
-        nextMaintenance.setDate(nextMaintenance.getDate() + gear.frequencyMaintenance);
-
         // Restamos un día y normalizamos la fecha
         const oneDayBefore = new Date(nextMaintenance);
         oneDayBefore.setDate(oneDayBefore.getDate() - 1);
@@ -40,9 +39,8 @@ export class NotificationService{
         const normalizedCompareDate = new Date(compareDate);
         normalizedCompareDate.setHours(0, 0, 0, 0);
 
-        console.log(`Comparando: ${normalizedCompareDate.toDateString()} con ${oneDayBefore.toDateString()}`);
-
         if (normalizedCompareDate.getTime() === oneDayBefore.getTime()) {
+            winston.info("CRON- NOTIFICATION ADDED for:"+ gear.name)
             this.notifications.push({
                 message: `Falta un día para el mantenimiento del equipo.`,
                 createdAt: new Date(),

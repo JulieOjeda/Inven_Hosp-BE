@@ -26,4 +26,8 @@ export class ReportRepository extends BaseRepository<IReport> {
 
     return
   }
+
+  async findByGearId(gearId: string): Promise<IReport | null>{
+    return  Report.findOne({gear: gearId})
+  }
 }

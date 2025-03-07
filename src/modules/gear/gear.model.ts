@@ -69,7 +69,12 @@ GearSchema.post("save", async function (doc: IGear) {
 
 GearSchema.pre("save", function (next) {
     if (!this.maintenanceAt) {
-        this.maintenanceAt = this.createdAt;
+        const newMaintenanceDate = new Date(); // Fecha de mantenimiento actual
+        newMaintenanceDate.setHours(0, 0, 0, 0);
+
+        // Sumamos la frecuencia de mantenimiento al día actual
+        newMaintenanceDate.setDate(newMaintenanceDate.getDate() + this.frequencyMaintenance);
+        this.maintenanceAt = newMaintenanceDate
     }
     console.log(`Comparando: ${this.createdAt.toDateString()} con ${this.maintenanceAt.toDateString()}`);
     next();
